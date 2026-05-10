@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdn.jsdelivr.net https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://*.googleapis.com https://*.google.com https://www.gstatic.com https://cdn.jsdelivr.net; frame-src https://www.google.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; object-src 'none'; base-uri 'self';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liberty in Bloom — A Floral Celebration of the Declaration of Independence</title>
+  <meta name="description" content="Celebrating America's 250th Birthday on July 4, 2026 — An interactive floral journey through the Declaration of Independence." />
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Firebase — reads credentials from firebase-config.js -->
+  <script type="module" src="firebase-init.js"></script>
+
+  <style>
+    /* ── Index-specific styles ── */
+    .hero-floral-accent {
+      font-family: var(--font-accent);
+      font-size: 1.3rem;
+      color: rgba(212, 175, 55, 0.7);
+      margin-top: 2rem;
+      animation: fadeSlideUp 1s 1.3s ease both;
+    }
+
+    /* Declaration section */
+    .declaration-section {
+      padding: 5rem 2rem;
+      background: var(--parchment);
+      background-image:
+        radial-gradient(ellipse at 80% 20%, rgba(212,175,55,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 80%, rgba(139,26,26,0.05) 0%, transparent 50%),
+        linear-gradient(180deg, #f5f0e8 0%, #ede5d0 50%, #f5f0e8 100%);
+    }
+
+    .history-intro {
+      max-width: 800px;
+      margin: 0 auto 3rem;
+      text-align: center;
+    }
+
+    .history-intro p {
+      font-size: 1.05rem;
+      color: var(--text-mid);
+      line-height: 1.9;
+    }
+
+    /* About section paragraphs */
+    .about-paragraphs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 2rem auto 0;
+      text-align: left;
+    }
+
+    @media (max-width: 700px) {
+      .about-paragraphs { grid-template-columns: 1fr; }
+    }
+
+    .about-p-card {
+      background: rgba(250, 248, 244, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: var(--radius-md);
+      padding: 1.8rem;
+    }
+
+    .about-p-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+
+    .about-p-card p {
+      font-size: 0.97rem;
+      color: rgba(250, 248, 244, 0.8);
+      line-height: 1.85;
+    }
+
+    /* Key Figures sub-section heading */
+    .subsection-heading {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      color: var(--navy);
+      text-align: center;
+      margin-bottom: 1.8rem;
+      position: relative;
+    }
+
+    .subsection-heading::after {
+      content: ' ✿ ';
+      color: var(--gold);
+    }
+
+    /* Quote section on parchment */
+    .quotes-section {
+      padding: 4rem 2rem;
+      background: linear-gradient(160deg, var(--navy) 0%, #0d1f3c 100%);
+    }
+
+    /* Horizontal scroll hint */
+    .scroll-hint {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-mid);
+      margin-top: 0.6rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+       ============================================================ -->
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">Liberty in <span>Bloom</span> &#127800;</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#declaration">Declaration</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+      <li><a href="survey.html">Survey</a></li>
+      <li><a href="results.html">Results</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <main>
+
+    <!-- ============================================================
+         HERO SECTION
+         ============================================================ -->
+    <section class="hero" aria-label="Hero section">
+      <!-- Flag ribbon corners -->
+      <div class="flag-ribbon top-left"  aria-hidden="true"></div>
+      <div class="flag-ribbon top-right" aria-hidden="true"></div>
+
+      <!-- Floating petals -->
+      <div class="petal-container" aria-hidden="true">
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+        <div class="petal"></div>
+      </div>
+
+      <div class="hero-content">
+        <p class="hero-eyebrow">&#127800; A Floral Tribute &#127800;</p>
+        <h1 class="hero-title">
+          Liberty in <span class="bloom-word">Bloom</span>
+        </h1>
+        <p class="hero-subtitle">A Floral Celebration of the Declaration of Independence</p>
+        <p class="hero-tagline">Celebrating America&rsquo;s 250th Birthday &mdash; July 4, 2026</p>
+        <a href="#countdown" class="btn btn-hero">Begin the Journey &rarr;</a>
+        <p class="hero-floral-accent">&#127807; Where history blossoms into eternity &#127807;</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         COUNTDOWN SECTION
+         ============================================================ -->
+    <section class="countdown-section" id="countdown" aria-label="Countdown to July 4, 2026">
+      <div class="countdown-card fade-in">
+        <h2 class="countdown-heading">Countdown to America&rsquo;s 250th Birthday</h2>
+        <p class="countdown-subheading">July 4, 2026 &mdash; The 250th Anniversary of Independence</p>
+
+        <div class="countdown-timer" role="timer" aria-live="polite" aria-label="Time remaining">
+          <div class="countdown-unit">
+            <span class="countdown-number" id="countdown-days">---</span>
+            <span class="countdown-label">Days</span>
+          </div>
+          <span class="countdown-divider" aria-hidden="true">:</span>
+          <div class="countdown-unit">
+            <span class="countdown-number" id="countdown-hours">--</span>
+            <span class="countdown-label">Hours</span>
+          </div>
+          <span class="countdown-divider" aria-hidden="true">:</span>
+          <div class="countdown-unit">
+            <span class="countdown-number" id="countdown-minutes">--</span>
+            <span class="countdown-label">Minutes</span>
+          </div>
+          <span class="countdown-divider" aria-hidden="true">:</span>
+          <div class="countdown-unit">
+            <span class="countdown-number" id="countdown-seconds">--</span>
+            <span class="countdown-label">Seconds</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DECLARATION OF INDEPENDENCE SECTION
+         ============================================================ -->
+    <section class="declaration-section" id="declaration" aria-label="Declaration of Independence">
+
+      <div class="section-header fade-in">
+        <span class="section-eyebrow">&#127800; Our Nation&rsquo;s Founding Document</span>
+        <h2 class="section-title">The Declaration of Independence</h2>
+      </div>
+
+      <div class="history-intro fade-in">
+        <p>
+          On July 4, 1776, delegates from thirteen British colonies in North America adopted the Declaration
+          of Independence, formally announcing their separation from Great Britain and establishing the United
+          States of America as a sovereign nation. Drafted primarily by Thomas Jefferson, the document drew
+          on Enlightenment philosophy to articulate the fundamental belief that all men are created equal
+          and endowed with certain unalienable rights. Its bold assertion that governments derive their just
+          powers from the consent of the governed inspired revolutions across the globe and continues to
+          resonate as a beacon of freedom and human dignity nearly 250 years later.
+        </p>
+      </div>
+
+      <!-- Key Figures -->
+      <div class="section-header fade-in" style="margin-bottom:2rem;">
+        <h3 class="subsection-heading">Founding Fathers</h3>
+      </div>
+
+      <div class="card-grid fade-in">
+        <article class="card figure-card">
+          <div class="figure-initial" aria-hidden="true">TJ</div>
+          <h3>Thomas Jefferson</h3>
+          <p class="figure-title">Primary Author of the Declaration</p>
+          <p>A Virginia planter, lawyer, and polymath, Thomas Jefferson was chosen at age 33 to draft the Declaration of Independence. His eloquent prose gave voice to the colonists' grievances and established the philosophical foundations of American democracy. Jefferson later served as the third President of the United States and founded the University of Virginia.</p>
+        </article>
+
+        <article class="card figure-card">
+          <div class="figure-initial" aria-hidden="true">JA</div>
+          <h3>John Adams</h3>
+          <p class="figure-title">Delegate &amp; Champion of Independence</p>
+          <p>Known as the "Atlas of Independence," John Adams of Massachusetts was instrumental in persuading the Continental Congress to vote for independence. A passionate advocate for colonial rights since the Stamp Act crisis, Adams later became the first Vice President and second President of the United States.</p>
+        </article>
+
+        <article class="card figure-card">
+          <div class="figure-initial" aria-hidden="true">BF</div>
+          <h3>Benjamin Franklin</h3>
+          <p class="figure-title">Statesman, Scientist &amp; Diplomat</p>
+          <p>At 70, Benjamin Franklin was the eldest signer of the Declaration of Independence. A celebrated inventor, author, and diplomat, Franklin served as America's representative in France, securing the crucial alliance that helped win the Revolutionary War. His legendary wit and wisdom made him one of the most recognized Americans of his era.</p>
+        </article>
+      </div>
+
+      <!-- Floral Divider -->
+      <div class="floral-divider" aria-hidden="true">
+        <span class="floral-divider-inner">&#127800; &#127808; &#127800;</span>
+      </div>
+
+      <!-- Clickable Quotes -->
+      <div class="section-header fade-in" style="margin-bottom: 2rem;">
+        <h3 class="subsection-heading">Famous Words from the Declaration</h3>
+        <p class="section-desc" style="font-size:0.9rem; color:var(--text-mid);">Click any quote to learn its historical significance</p>
+      </div>
+
+      <div class="quotes-section" id="quotes-section">
+        <div class="quotes-grid">
+
+          <article class="quote-card fade-in" role="button" tabindex="0"
+            data-modal="true"
+            data-quote="We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty and the pursuit of Happiness."
+            data-title="The Philosophy of Natural Rights"
+            data-body="This opening passage of the Declaration's second paragraph is perhaps the most celebrated sentence in American political history. Jefferson drew on John Locke's theory of natural rights, substituting 'pursuit of Happiness' for Locke's 'property.' The phrase 'all men are created equal' became the cornerstone of the abolitionist movement, the suffragist movement, and every civil rights struggle that followed. Lincoln called it 'an abstract truth applicable to all men and all times.'">
+            <blockquote>We hold these truths to be self-evident, that all men are created equal&hellip;</blockquote>
+            <cite>&mdash; The Declaration of Independence, 1776</cite>
+            <p class="click-hint">&#10070; Click to explore the history</p>
+          </article>
+
+          <article class="quote-card fade-in" role="button" tabindex="0"
+            data-modal="true"
+            data-quote="That whenever any Form of Government becomes destructive of these ends, it is the Right of the People to alter or to abolish it, and to institute new Government."
+            data-title="The Right of Revolution"
+            data-body="This radical assertion — that citizens have not just the right but the duty to overthrow a tyrannical government — was deeply influenced by Enlightenment thinkers including Locke, Rousseau, and Montesquieu. In 1776, declaring this right was an act of profound courage. This passage inspired independence movements in France, Latin America, and beyond. It remains one of the most powerful statements of popular sovereignty ever written.">
+            <blockquote>It is the Right of the People to alter or to abolish it, and to institute new Government&hellip;</blockquote>
+            <cite>&mdash; The Declaration of Independence, 1776</cite>
+            <p class="click-hint">&#10070; Click to explore the history</p>
+          </article>
+
+          <article class="quote-card fade-in" role="button" tabindex="0"
+            data-modal="true"
+            data-quote="And for the support of this Declaration, with a firm reliance on the protection of divine Providence, we mutually pledge to each other our Lives, our Fortunes and our sacred Honor."
+            data-title="The Signers' Sacred Pledge"
+            data-body="The closing words of the Declaration represent one of the most solemn oaths in history. The 56 men who signed the document were committing treason against the British Crown — an act punishable by death. Many signers did suffer greatly: their homes were burned, their families threatened, and their fortunes lost. Nine died during the war. Yet their pledge held. This final sentence remains a testament to the price of freedom.">
+            <blockquote>We mutually pledge to each other our Lives, our Fortunes and our sacred Honor.</blockquote>
+            <cite>&mdash; The Declaration of Independence, 1776</cite>
+            <p class="click-hint">&#10070; Click to explore the history</p>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- Floral Divider -->
+      <div class="floral-divider" aria-hidden="true" style="margin-top: 1rem;">
+        <span class="floral-divider-inner">&#127807; &#127800; &#127807;</span>
+      </div>
+
+      <!-- Timeline -->
+      <div class="section-header fade-in" style="margin-bottom:2rem; margin-top: 2rem;">
+        <h3 class="subsection-heading">Road to Independence: A Timeline</h3>
+      </div>
+
+      <div class="timeline-container">
+        <div class="timeline" role="list" aria-label="Timeline of events leading to independence">
+
+          <div class="timeline-item" role="listitem">
+            <div class="timeline-flower" aria-hidden="true">&#127808;</div>
+            <div class="timeline-year">1765</div>
+            <div class="timeline-event">Stamp Act</div>
+            <div class="timeline-desc">Britain imposes direct taxes on colonial documents, sparking widespread protest and boycotts.</div>
+          </div>
+
+          <div class="timeline-item" role="listitem">
+            <div class="timeline-flower" aria-hidden="true">&#128293;</div>
+            <div class="timeline-year">1770</div>
+            <div class="timeline-event">Boston Massacre</div>
+            <div class="timeline-desc">British soldiers kill five colonists in Boston, fueling outrage and calls for resistance.</div>
+          </div>
+
+          <div class="timeline-item" role="listitem">
+            <div class="timeline-flower" aria-hidden="true">&#9749;</div>
+            <div class="timeline-year">1773</div>
+            <div class="timeline-event">Boston Tea Party</div>
+            <div class="timeline-desc">Colonists dump 342 chests of British tea into Boston Harbor to protest taxation without representation.</div>
+          </div>
+
+          <div class="timeline-item" role="listitem">
+            <div class="timeline-flower" aria-hidden="true">&#9876;&#65039;</div>
+            <div class="timeline-year">1775</div>
+            <div class="timeline-event">Revolution Begins</div>
+            <div class="timeline-desc">The first shots of the Revolutionary War are fired at Lexington and Concord — "the shot heard round the world."</div>
+          </div>
+
+          <div class="timeline-item" role="listitem">
+            <div class="timeline-flower" aria-hidden="true">&#127800;</div>
+            <div class="timeline-year">1776</div>
+            <div class="timeline-event">Declaration Signed</div>
+            <div class="timeline-desc">The Continental Congress adopts the Declaration of Independence on July 4th — a new nation is born.</div>
+          </div>
+
+        </div>
+        <p class="scroll-hint">&#8592; Scroll to see full timeline &rarr;</p>
+      </div>
+
+    </section>
+
+    <!-- ============================================================
+         ABOUT SECTION
+         ============================================================ -->
+    <section class="about-section" aria-label="About this website">
+      <div class="about-content">
+        <div class="section-header">
+          <span class="section-eyebrow">&#127800; Our Purpose</span>
+          <h2 class="section-title">Why Liberty in Bloom?</h2>
+        </div>
+
+        <p class="about-text">
+          <em>Liberty in Bloom</em> was created to honor the extraordinary courage and vision of the Founding Fathers
+          as we approach America&rsquo;s 250th birthday on July 4, 2026. Just as flowers bloom and reach toward
+          the light, the ideals enshrined in the Declaration of Independence have blossomed across generations,
+          inspiring freedom movements around the world.
+        </p>
+
+        <div class="about-paragraphs">
+          <div class="about-p-card fade-in">
+            <h3>&#127800; A Living Document</h3>
+            <p>
+              The Declaration of Independence is not merely a historical artifact gathering dust in the National
+              Archives — it is a living promise to every American. Its words &ldquo;all men are created equal&rdquo;
+              and &ldquo;unalienable rights&rdquo; have fueled abolitionism, women&rsquo;s suffrage, civil rights,
+              and countless movements for justice and dignity. As we celebrate 250 years, we renew that promise
+              for the generations yet to come.
+            </p>
+          </div>
+          <div class="about-p-card fade-in">
+            <h3>&#127807; Education Through Beauty</h3>
+            <p>
+              We believe history should be beautiful, engaging, and alive. By weaving the story of American
+              independence through the metaphor of flowering and bloom, we invite visitors of all ages to
+              connect emotionally with the sacrifices and triumphs of 1776. Take our quiz, share your
+              perspective in the survey, and let your own love of liberty bloom. Together, we keep the
+              spirit of Independence Day forever in flower.
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top: 2.5rem;">
+          <a href="quiz.html" class="btn btn-gold" style="margin-right: 1rem;">Take the Quiz &rarr;</a>
+          <a href="survey.html" class="btn btn-parchment">Share Your Voice &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <p class="footer-tagline">Made with &#127800; for America&rsquo;s 250th Birthday</p>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="#declaration">Declaration</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="survey.html">Survey</a>
+      <a href="results.html">Results</a>
+    </nav>
+    <p class="footer-copy">&copy; 2026 Liberty in Bloom &mdash; A Scholarship Tribute to America&rsquo;s Independence</p>
+  </footer>
+
+  <!-- ============================================================
+       QUOTE MODAL
+       ============================================================ -->
+  <div class="modal-overlay" id="quote-modal" role="dialog" aria-modal="true" aria-label="Quote details">
+    <div class="modal-box">
+      <button class="modal-close" aria-label="Close modal">&times;</button>
+      <p class="modal-quote" id="modal-quote-text"></p>
+      <h3 class="modal-title" id="modal-title-text"></h3>
+      <p class="modal-body" id="modal-body-text"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="index-page.js"></script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdn.jsdelivr.net https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://*.googleapis.com https://*.google.com https://www.gstatic.com https://cdn.jsdelivr.net; frame-src https://www.google.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; object-src 'none'; base-uri 'self';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liberty in Bloom — Share Your Voice: Independence Day Survey</title>
+  <meta name="description" content="Share your perspective on the Declaration of Independence and July 4th with our interactive survey." />
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Firebase — reads credentials from firebase-config.js -->
+  <script type="module" src="firebase-init.js"></script>
+
+  <style>
+    /* ── Survey-specific extra styles ── */
+
+    .survey-page-header {
+      padding: 4rem 2rem 1rem;
+      text-align: center;
+    }
+
+    .survey-page-header h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+
+    .survey-page-header .subtitle {
+      font-family: var(--font-accent);
+      font-size: 1.15rem;
+      color: var(--rose-gold);
+      margin-bottom: 0.3rem;
+    }
+
+    .survey-page-header .desc {
+      font-size: 0.95rem;
+      color: var(--text-mid);
+    }
+
+    .survey-decorative {
+      text-align: center;
+      padding: 0.8rem;
+      font-size: 1.6rem;
+      color: var(--rose-gold);
+      opacity: 0.7;
+    }
+
+    /* Aggregated results after submit */
+    .agg-results {
+      margin-top: 2rem;
+      text-align: left;
+    }
+
+    .agg-results h3 {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      color: var(--navy);
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--parchment-dark);
+    }
+
+    .agg-question-block {
+      margin-bottom: 1.8rem;
+    }
+
+    .agg-q-label {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--navy);
+      margin-bottom: 0.8rem;
+      font-family: var(--font-heading);
+    }
+
+    .agg-bar-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .agg-bar-label {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      min-width: 160px;
+      flex-shrink: 0;
+    }
+
+    .agg-bar-track {
+      flex: 1;
+      background: rgba(201, 149, 106, 0.2);
+      border-radius: 50px;
+      height: 14px;
+      overflow: hidden;
+    }
+
+    .agg-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--rose-gold), var(--gold));
+      border-radius: 50px;
+      transition: width 1s ease;
+    }
+
+    .agg-bar-count {
+      font-size: 0.8rem;
+      color: var(--text-mid);
+      min-width: 30px;
+      text-align: right;
+    }
+
+    .survey-progress-steps {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .survey-step-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(201, 149, 106, 0.3);
+      border: 1.5px solid var(--rose-gold);
+      transition: background var(--transition);
+    }
+
+    .survey-step-dot.active {
+      background: var(--rose-gold);
+    }
+
+    .survey-step-dot.done {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .already-submitted-notice {
+      background: rgba(212, 175, 55, 0.12);
+      border: 1.5px solid var(--gold);
+      border-radius: var(--radius-md);
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.92rem;
+      color: var(--text-mid);
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="survey-page-bg">
+
+  <!-- ============================================================
+       NAVIGATION
+       ============================================================ -->
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">Liberty in <span>Bloom</span> &#127800;</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#declaration">Declaration</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+      <li><a href="survey.html">Survey</a></li>
+      <li><a href="results.html">Results</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <main>
+
+    <!-- Page Header -->
+    <div class="survey-page-header">
+      <div class="survey-decorative" aria-hidden="true">&#127800; &#11088; &#127800;</div>
+      <h1>Share Your Voice</h1>
+      <p class="subtitle">Your perspective on Independence Day &amp; American History</p>
+      <p class="desc">5 quick questions &bull; Anonymous &bull; Results used for the Liberty in Bloom research report</p>
+    </div>
+
+    <div class="survey-container">
+
+      <!-- Survey Form -->
+      <div id="survey-form-area">
+
+        <!-- Step dots -->
+        <div class="survey-progress-steps" id="step-dots" aria-label="Survey progress" role="navigation">
+          <div class="survey-step-dot active" id="dot-0"></div>
+          <div class="survey-step-dot" id="dot-1"></div>
+          <div class="survey-step-dot" id="dot-2"></div>
+          <div class="survey-step-dot" id="dot-3"></div>
+          <div class="survey-step-dot" id="dot-4"></div>
+        </div>
+
+        <form id="survey-form" novalidate>
+
+          <!-- Question 1 -->
+          <div class="survey-form-card">
+            <div class="survey-q-number" aria-hidden="true">1</div>
+            <h2 class="survey-q-text">How confident are you in your knowledge of American history?</h2>
+            <div class="survey-options" role="radiogroup" aria-label="Confidence level">
+              <label class="survey-option">
+                <input type="radio" name="q0" value="Very Confident" />
+                <span class="survey-option-label">Very Confident</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q0" value="Somewhat Confident" />
+                <span class="survey-option-label">Somewhat Confident</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q0" value="Not Very Confident" />
+                <span class="survey-option-label">Not Very Confident</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q0" value="Not Confident At All" />
+                <span class="survey-option-label">Not Confident At All</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Question 2 -->
+          <div class="survey-form-card">
+            <div class="survey-q-number" aria-hidden="true">2</div>
+            <h2 class="survey-q-text">Which part of the Declaration of Independence do you find most inspiring?</h2>
+            <div class="survey-options" role="radiogroup" aria-label="Most inspiring section">
+              <label class="survey-option">
+                <input type="radio" name="q1" value="The Preamble" />
+                <span class="survey-option-label">The Preamble</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q1" value="The List of Grievances" />
+                <span class="survey-option-label">The List of Grievances</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q1" value="The Conclusion" />
+                <span class="survey-option-label">The Conclusion</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q1" value="The Signatures" />
+                <span class="survey-option-label">The Signatures</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Question 3 (Checkboxes) -->
+          <div class="survey-form-card">
+            <div class="survey-q-number" aria-hidden="true">3</div>
+            <h2 class="survey-q-text">What makes July 4th meaningful to you? <span style="font-size:0.8rem; font-weight:400; color:var(--rose-gold);">(Select all that apply)</span></h2>
+            <div class="survey-options" role="group" aria-label="Meaning of July 4th">
+              <label class="survey-option">
+                <input type="checkbox" name="q2" value="Fireworks &amp; Celebrations" />
+                <span class="survey-option-label">Fireworks &amp; Celebrations</span>
+              </label>
+              <label class="survey-option">
+                <input type="checkbox" name="q2" value="Family Traditions" />
+                <span class="survey-option-label">Family Traditions</span>
+              </label>
+              <label class="survey-option">
+                <input type="checkbox" name="q2" value="Patriotism &amp; Pride" />
+                <span class="survey-option-label">Patriotism &amp; Pride</span>
+              </label>
+              <label class="survey-option">
+                <input type="checkbox" name="q2" value="Remembering History" />
+                <span class="survey-option-label">Remembering History</span>
+              </label>
+              <label class="survey-option">
+                <input type="checkbox" name="q2" value="Freedom &amp; Liberty" />
+                <span class="survey-option-label">Freedom &amp; Liberty</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Question 4 -->
+          <div class="survey-form-card">
+            <div class="survey-q-number" aria-hidden="true">4</div>
+            <h2 class="survey-q-text">Which Founding Father do you admire most?</h2>
+            <div class="survey-options" role="radiogroup" aria-label="Founding Father you admire most">
+              <label class="survey-option">
+                <input type="radio" name="q3" value="Thomas Jefferson" />
+                <span class="survey-option-label">Thomas Jefferson</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q3" value="John Adams" />
+                <span class="survey-option-label">John Adams</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q3" value="Benjamin Franklin" />
+                <span class="survey-option-label">Benjamin Franklin</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q3" value="George Washington" />
+                <span class="survey-option-label">George Washington</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Question 5 -->
+          <div class="survey-form-card">
+            <div class="survey-q-number" aria-hidden="true">5</div>
+            <h2 class="survey-q-text">After visiting this website, how has your knowledge of the Declaration changed?</h2>
+            <div class="survey-options" role="radiogroup" aria-label="Knowledge change">
+              <label class="survey-option">
+                <input type="radio" name="q4" value="I learned a lot" />
+                <span class="survey-option-label">I learned a lot</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q4" value="I learned a few new things" />
+                <span class="survey-option-label">I learned a few new things</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q4" value="I already knew most of this" />
+                <span class="survey-option-label">I already knew most of this</span>
+              </label>
+              <label class="survey-option">
+                <input type="radio" name="q4" value="No change" />
+                <span class="survey-option-label">No change</span>
+              </label>
+            </div>
+          </div>
+
+          <p class="text-center" id="survey-error" style="color:var(--crimson); font-weight:700; min-height:1.5rem; font-size:0.92rem;"></p>
+
+          <button type="submit" class="btn btn-crimson survey-submit-btn">
+            Submit Survey &#127800;
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Thank You Screen (hidden until submit) -->
+      <div class="survey-thankyou" id="survey-thankyou" role="region" aria-label="Thank you for submitting">
+
+        <div class="bloom-animation" id="bloom-emoji" aria-hidden="true">&#127800;</div>
+
+        <h2 style="font-family: var(--font-heading); font-size: 2rem; color: var(--navy); margin: 1rem 0 0.5rem;">
+          Thank You for Your Voice!
+        </h2>
+        <p style="font-family: var(--font-accent); font-size: 1.2rem; color: var(--rose-gold); margin-bottom: 1.5rem;">
+          Your response has been recorded.
+        </p>
+        <p style="color: var(--text-mid); margin-bottom: 2rem; font-size: 0.97rem;">
+          Your perspective helps paint a richer picture of how Americans connect with our founding ideals.
+          Together we celebrate the liberty that blooms in every generation.
+        </p>
+
+        <!-- Aggregated results preview -->
+        <div class="agg-results" id="agg-results">
+          <h3>&#128202; Community Responses So Far</h3>
+          <div id="agg-charts"></div>
+        </div>
+
+        <div style="margin-top: 2rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+          <a href="quiz.html" class="btn btn-parchment">&#129337; Take the Quiz</a>
+          <a href="results.html" class="btn btn-gold">View Full Results &#128202;</a>
+          <a href="index.html" class="btn btn-crimson">&#127968; Home</a>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <p class="footer-tagline">Made with &#127800; for America&rsquo;s 250th Birthday</p>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#declaration">Declaration</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="survey.html">Survey</a>
+      <a href="results.html">Results</a>
+    </nav>
+    <p class="footer-copy">&copy; 2026 Liberty in Bloom &mdash; A Scholarship Tribute to America&rsquo;s Independence</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="survey-page.js"></script>
+</body>
+</html>

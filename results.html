@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdn.jsdelivr.net https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://*.googleapis.com https://*.google.com https://www.gstatic.com https://cdn.jsdelivr.net; frame-src https://www.google.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; object-src 'none'; base-uri 'self';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liberty in Bloom — Analytics & Results Dashboard</title>
+  <meta name="description" content="See the full analytics and results from the Liberty in Bloom quiz and survey data." />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Firebase — reads credentials from firebase-config.js -->
+  <script type="module" src="firebase-init.js"></script>
+
+  <style>
+    /* ── Results-specific extra styles ── */
+
+    .results-decorative {
+      text-align: center;
+      padding: 0.8rem;
+      font-size: 1.8rem;
+      color: var(--rose-gold);
+      opacity: 0.65;
+    }
+
+    .results-page-header {
+      padding: 4rem 2rem 1rem;
+      text-align: center;
+    }
+
+    .results-page-header h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+
+    .results-page-header .subtitle {
+      font-family: var(--font-accent);
+      font-size: 1.1rem;
+      color: var(--rose-gold);
+      margin-bottom: 0.3rem;
+    }
+
+    .results-page-header .desc {
+      font-size: 0.9rem;
+      color: var(--text-mid);
+    }
+
+    .no-data-msg {
+      text-align: center;
+      padding: 2rem;
+      background: var(--parchment);
+      border-radius: var(--radius-md);
+      border: 1.5px dashed var(--rose-gold);
+    }
+
+    .no-data-msg p {
+      color: var(--text-mid);
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+
+    .refresh-btn {
+      cursor: pointer;
+      background: none;
+      border: 1.5px solid var(--rose-gold);
+      border-radius: var(--radius-sm);
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      color: var(--rose-gold);
+      font-weight: 700;
+      transition: all var(--transition);
+    }
+    .refresh-btn:hover {
+      background: rgba(201,149,106,0.15);
+    }
+
+    /* Score distribution legend */
+    .score-legend {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 0.8rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      color: var(--text-mid);
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    /* Print styles */
+    @media print {
+      .site-nav,
+      .site-footer,
+      .no-print { display: none !important; }
+      body { background: white; }
+      .results-page-bg { background: white; }
+      .stat-card { border: 1px solid #ccc; background: #f8f8f8; }
+      .results-section { border: 1px solid #ccc; box-shadow: none; }
+    }
+  </style>
+</head>
+<body class="results-page-bg">
+
+  <!-- ============================================================
+       NAVIGATION
+       ============================================================ -->
+  <nav class="site-nav" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">Liberty in <span>Bloom</span> &#127800;</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#declaration">Declaration</a></li>
+      <li><a href="quiz.html">Quiz</a></li>
+      <li><a href="survey.html">Survey</a></li>
+      <li><a href="results.html">Results</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <main>
+
+    <!-- Page Header -->
+    <div class="results-page-header">
+      <div class="results-decorative" aria-hidden="true">&#128202; &#127800; &#128202;</div>
+      <h1>Liberty in Bloom &mdash; Results Dashboard</h1>
+      <p class="subtitle">Analytics &amp; Community Insights</p>
+      <p class="desc">Results update in real time</p>
+    </div>
+
+    <div class="results-container">
+
+      <!-- Demo data banner (hidden when real data exists) -->
+      <div id="demo-banner" style="display:none; background:rgba(212,175,55,0.15); border:1.5px solid var(--gold); border-radius:var(--radius-md); padding:1rem 1.5rem; margin-bottom:1.5rem; text-align:center; font-size:0.9rem; color:var(--text-mid);">
+        &#127800; <strong>Sample data shown.</strong> Take the <a href="quiz.html" style="color:var(--crimson); font-weight:700;">quiz</a> and <a href="survey.html" style="color:var(--crimson); font-weight:700;">survey</a> to replace this with real results!
+      </div>
+
+      <!-- ============================================================
+           SECTION 1: STAT CARDS
+           ============================================================ -->
+      <div class="stat-grid fade-in" id="stat-grid">
+        <div class="stat-card">
+          <div class="stat-icon">&#128221;</div>
+          <div class="stat-number" id="stat-quiz-count">—</div>
+          <div class="stat-label">Quiz Participants</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">&#11088;</div>
+          <div class="stat-number" id="stat-avg-score">—</div>
+          <div class="stat-label">Average Quiz Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">&#127800;</div>
+          <div class="stat-number" id="stat-survey-count">—</div>
+          <div class="stat-label">Survey Responses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">&#127942;</div>
+          <div class="stat-number" id="stat-top-score">—</div>
+          <div class="stat-label">Highest Score Achieved</div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           SECTION 2: QUIZ SCORE DISTRIBUTION
+           ============================================================ -->
+      <section class="results-section fade-in" aria-label="Quiz score distribution">
+        <h2 class="results-section-title">
+          <span aria-hidden="true">&#128200;</span> Quiz Score Distribution
+        </h2>
+
+        <div id="quiz-dist-area">
+          <div class="chart-wrapper">
+            <canvas id="score-dist-chart" aria-label="Bar chart showing quiz score distribution"></canvas>
+          </div>
+          <div class="score-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#8b1a1a;"></div>
+              <span>Needs Review (0–3)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#c9956a;"></div>
+              <span>Good Try (4–6)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#d4af37;"></div>
+              <span>Patriot Scholar (7–8)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#2a6b2a;"></div>
+              <span>Founding Father Level (9–10)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 3: MOST MISSED QUESTION
+           ============================================================ -->
+      <section class="results-section fade-in" aria-label="Most missed question">
+        <h2 class="results-section-title">
+          <span aria-hidden="true">&#10067;</span> Most Missed Question
+        </h2>
+        <div id="missed-q-area">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 4: SURVEY RESULTS
+           ============================================================ -->
+      <section class="results-section fade-in" aria-label="Survey results">
+        <h2 class="results-section-title">
+          <span aria-hidden="true">&#127800;</span> Survey Results
+        </h2>
+        <div class="charts-grid" id="survey-charts-area">
+          <!-- Charts populated by JS -->
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 5: SAMPLE REPORT
+           ============================================================ -->
+      <section class="results-section fade-in" aria-label="Sample data report">
+        <h2 class="results-section-title">
+          <span aria-hidden="true">&#128196;</span> Research Summary Report
+        </h2>
+        <div class="report-text" id="report-text">
+          Loading report data&hellip;
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SECTION 6: EXPORT NOTE
+           ============================================================ -->
+      <div class="export-note no-print fade-in" role="note">
+        <div class="export-note-icon" aria-hidden="true">&#128424;&#65039;</div>
+        <div>
+          <strong>Export This Report:</strong> Press <kbd>Ctrl+P</kbd> (Windows) or <kbd>Cmd+P</kbd> (Mac)
+          to open your browser&rsquo;s print dialog. Choose &ldquo;Save as PDF&rdquo; to export a complete
+          copy of this results dashboard. Charts and data will be included in the printout.
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="text-center" style="margin-top: 2rem;" role="navigation" aria-label="Page actions">
+        <a href="quiz.html" class="btn btn-parchment" style="margin: 0.5rem;">&#128221; Take the Quiz</a>
+        <a href="survey.html" class="btn btn-crimson" style="margin: 0.5rem;">&#127800; Take the Survey</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer" role="contentinfo">
+    <p class="footer-tagline">Made with &#127800; for America&rsquo;s 250th Birthday</p>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#declaration">Declaration</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="survey.html">Survey</a>
+      <a href="results.html">Results</a>
+    </nav>
+    <p class="footer-copy">&copy; 2026 Liberty in Bloom &mdash; A Scholarship Tribute to America&rsquo;s Independence</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="results-page.js"></script>
+</body>
+</html>
