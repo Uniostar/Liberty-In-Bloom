@@ -827,7 +827,8 @@ ul { list-style: none; }
   display: flex;
   gap: 0;
   position: relative;
-  min-width: 700px;
+  width: max-content;
+  min-width: 100%;
   padding: 2rem 2rem 1rem;
 }
 
@@ -843,7 +844,7 @@ ul { list-style: none; }
 }
 
 .timeline-item {
-  flex: 1;
+  flex: 0 0 180px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -895,7 +896,7 @@ ul { list-style: none; }
   color: var(--text-mid);
   text-align: center;
   line-height: 1.5;
-  max-width: 120px;
+  max-width: 150px;
 }
 
 /* ============================================================
@@ -1763,10 +1764,6 @@ ul { list-style: none; }
 
   .countdown-unit {
     min-width: 60px;
-  }
-
-  .timeline {
-    min-width: 600px;
   }
 
   .charts-grid {
