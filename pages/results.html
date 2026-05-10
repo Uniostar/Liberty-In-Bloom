@@ -6,13 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Liberty in Bloom — Analytics & Results Dashboard</title>
   <meta name="description" content="See the full analytics and results from the Liberty in Bloom quiz and survey data." />
-  <link rel="icon" type="image/png" href="favicon.png" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/png" href="../img/favicon.png" />
+  <link rel="apple-touch-icon" href="../img/favicon.png" />
+  <link rel="stylesheet" href="../styles.css" />
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
   <!-- Firebase — reads credentials from firebase-config.js -->
-  <script type="module" src="firebase-init.js"></script>
+  <script src="../debug-setup.js"></script>
+  <script type="module" src="../js/firebase-init.js"></script>
 
   <style>
     /* ── Results-specific extra styles ── */
@@ -119,10 +121,10 @@
        NAVIGATION
        ============================================================ -->
   <nav class="site-nav" role="navigation" aria-label="Main navigation">
-    <a href="index.html" class="nav-logo">Liberty in <span>Bloom</span> &#127800;</a>
+    <a href="../index.html" class="nav-logo">Liberty in <span>Bloom</span> &#127800;</a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="index.html#declaration">Declaration</a></li>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../index.html#declaration">Declaration</a></li>
       <li><a href="quiz.html">Quiz</a></li>
       <li><a href="survey.html">Survey</a></li>
       <li><a href="results.html">Results</a></li>
@@ -271,8 +273,8 @@
   <footer class="site-footer" role="contentinfo">
     <p class="footer-tagline">Made with &#127800; for America&rsquo;s 250th Birthday</p>
     <nav class="footer-links" aria-label="Footer navigation">
-      <a href="index.html">Home</a>
-      <a href="index.html#declaration">Declaration</a>
+      <a href="../index.html">Home</a>
+      <a href="../index.html#declaration">Declaration</a>
       <a href="quiz.html">Quiz</a>
       <a href="survey.html">Survey</a>
       <a href="results.html">Results</a>
@@ -280,7 +282,7 @@
     <p class="footer-copy">&copy; 2026 Liberty in Bloom &mdash; A Scholarship Tribute to America&rsquo;s Independence</p>
   </footer>
 
-  <script src="script.js"></script>
-  <script src="results-page.js"></script>
+  <script src="../js/script.js"></script>
+  <script src="../js/results-page.js"></script>
 </body>
 </html>

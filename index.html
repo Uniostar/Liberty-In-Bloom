@@ -6,11 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Liberty in Bloom — A Floral Celebration of the Declaration of Independence</title>
   <meta name="description" content="Celebrating America's 250th Birthday on July 4, 2026 — An interactive floral journey through the Declaration of Independence." />
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="icon" type="image/png" href="img/favicon.png" />
+  <link rel="apple-touch-icon" href="img/favicon.png" />
   <link rel="stylesheet" href="styles.css" />
 
   <!-- Firebase — reads credentials from firebase-config.js -->
-  <script type="module" src="firebase-init.js"></script>
+  <script src="debug-setup.js"></script>
+  <script type="module" src="js/firebase-init.js"></script>
 
   <style>
     /* ── Index-specific styles ── */
@@ -119,9 +121,9 @@
     <ul class="nav-links" id="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="#declaration">Declaration</a></li>
-      <li><a href="quiz.html">Quiz</a></li>
-      <li><a href="survey.html">Survey</a></li>
-      <li><a href="results.html">Results</a></li>
+      <li><a href="pages/quiz.html">Quiz</a></li>
+      <li><a href="pages/survey.html">Survey</a></li>
+      <li><a href="pages/results.html">Results</a></li>
     </ul>
     <button class="nav-hamburger" id="hamburger" aria-label="Toggle navigation">
       <span></span><span></span><span></span>
@@ -227,21 +229,21 @@
 
       <div class="card-grid fade-in">
         <article class="card figure-card">
-          <div class="figure-initial" aria-hidden="true">TJ</div>
+          <img class="figure-portrait" src="img/tj.png" alt="Portrait of Thomas Jefferson" />
           <h3>Thomas Jefferson</h3>
           <p class="figure-title">Primary Author of the Declaration</p>
           <p>A Virginia planter, lawyer, and polymath, Thomas Jefferson was chosen at age 33 to draft the Declaration of Independence. His eloquent prose gave voice to the colonists' grievances and established the philosophical foundations of American democracy. Jefferson later served as the third President of the United States and founded the University of Virginia.</p>
         </article>
 
         <article class="card figure-card">
-          <div class="figure-initial" aria-hidden="true">JA</div>
+          <img class="figure-portrait" src="img/ja.png" alt="Portrait of John Adams" />
           <h3>John Adams</h3>
           <p class="figure-title">Delegate &amp; Champion of Independence</p>
           <p>Known as the "Atlas of Independence," John Adams of Massachusetts was instrumental in persuading the Continental Congress to vote for independence. A passionate advocate for colonial rights since the Stamp Act crisis, Adams later became the first Vice President and second President of the United States.</p>
         </article>
 
         <article class="card figure-card">
-          <div class="figure-initial" aria-hidden="true">BF</div>
+          <img class="figure-portrait" src="img/bf.png" alt="Portrait of Benjamin Franklin" />
           <h3>Benjamin Franklin</h3>
           <p class="figure-title">Statesman, Scientist &amp; Diplomat</p>
           <p>At 70, Benjamin Franklin was the eldest signer of the Declaration of Independence. A celebrated inventor, author, and diplomat, Franklin served as America's representative in France, securing the crucial alliance that helped win the Revolutionary War. His legendary wit and wisdom made him one of the most recognized Americans of his era.</p>
@@ -389,9 +391,9 @@
           </div>
         </div>
 
-        <div style="margin-top: 2.5rem;">
-          <a href="quiz.html" class="btn btn-gold" style="margin-right: 1rem;">Take the Quiz &rarr;</a>
-          <a href="survey.html" class="btn btn-parchment">Share Your Voice &rarr;</a>
+        <div style="margin-top: 2.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+          <a href="pages/quiz.html" class="btn btn-gold">Take the Quiz &rarr;</a>
+          <a href="pages/survey.html" class="btn btn-parchment">Share Your Voice &rarr;</a>
         </div>
       </div>
     </section>
@@ -406,9 +408,9 @@
     <nav class="footer-links" aria-label="Footer navigation">
       <a href="index.html">Home</a>
       <a href="#declaration">Declaration</a>
-      <a href="quiz.html">Quiz</a>
-      <a href="survey.html">Survey</a>
-      <a href="results.html">Results</a>
+      <a href="pages/quiz.html">Quiz</a>
+      <a href="pages/survey.html">Survey</a>
+      <a href="pages/results.html">Results</a>
     </nav>
     <p class="footer-copy">&copy; 2026 Liberty in Bloom &mdash; A Scholarship Tribute to America&rsquo;s Independence</p>
   </footer>
@@ -425,7 +427,7 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
-  <script src="index-page.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/index-page.js"></script>
 </body>
 </html>
