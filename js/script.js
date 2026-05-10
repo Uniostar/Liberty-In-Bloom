@@ -38,50 +38,46 @@
    FIREFLY EFFECT
    ============================================================ */
 function initFireflies(count = 20) {
-  const container = document.body;
+  const hero = document.querySelector('.hero');
+  if (!hero) return;
+
   const fireflies = [];
 
   for (let i = 0; i < count; i++) {
     const ff = document.createElement('div');
     ff.classList.add('firefly');
 
-    // Random starting position
-    const x = Math.random() * window.innerWidth;
-    const y = Math.random() * window.innerHeight;
+    const x = Math.random() * hero.offsetWidth;
+    const y = Math.random() * hero.offsetHeight;
     ff.style.left = x + 'px';
     ff.style.top  = y + 'px';
 
-    // Random animation duration and delay
-    const dur   = 2 + Math.random() * 4;   // 2–6s pulse
-    const delay = Math.random() * 5;         // 0–5s delay
+    const dur   = 2 + Math.random() * 4;
+    const delay = Math.random() * 5;
     ff.style.animationDuration = dur + 's';
     ff.style.animationDelay   = delay + 's';
 
-    container.appendChild(ff);
+    hero.appendChild(ff);
     fireflies.push({ el: ff, x, y,
       vx: (Math.random() - 0.5) * 0.8,
       vy: (Math.random() - 0.5) * 0.8
     });
   }
 
-  // Slowly drift fireflies
   function driftFireflies() {
-    const W = window.innerWidth;
-    const H = window.innerHeight;
+    const W = hero.offsetWidth;
+    const H = hero.offsetHeight;
 
     fireflies.forEach(ff => {
       ff.x += ff.vx;
       ff.y += ff.vy;
 
-      // Bounce off edges
       if (ff.x < 0 || ff.x > W) ff.vx *= -1;
       if (ff.y < 0 || ff.y > H) ff.vy *= -1;
 
-      // Occasionally change direction
       if (Math.random() < 0.008) {
         ff.vx += (Math.random() - 0.5) * 0.5;
         ff.vy += (Math.random() - 0.5) * 0.5;
-        // Clamp speed
         const speed = Math.sqrt(ff.vx * ff.vx + ff.vy * ff.vy);
         if (speed > 1.2) { ff.vx *= 0.8; ff.vy *= 0.8; }
         if (speed < 0.2) { ff.vx += (Math.random() - 0.5) * 0.3; ff.vy += (Math.random() - 0.5) * 0.3; }

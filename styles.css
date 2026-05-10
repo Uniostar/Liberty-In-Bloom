@@ -341,7 +341,7 @@ ul { list-style: none; }
    FIREFLY EFFECT
    ============================================================ */
 .firefly {
-  position: fixed;
+  position: absolute;
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -837,6 +837,7 @@ ul { list-style: none; }
 
 .timeline {
   display: flex;
+  justify-content: space-between;
   gap: 0;
   position: relative;
   width: max-content;
@@ -847,8 +848,8 @@ ul { list-style: none; }
 .timeline::before {
   content: '';
   position: absolute;
-  left: calc(2rem + (100% - 4rem) / 10);
-  right: calc(2rem + (100% - 4rem) / 10);
+  left: calc(2rem + 90px);
+  right: calc(2rem + 90px);
   top: 54px;
   height: 3px;
   background: linear-gradient(90deg, var(--rose-gold), var(--gold), var(--crimson), var(--gold), var(--rose-gold));
@@ -856,7 +857,7 @@ ul { list-style: none; }
 }
 
 .timeline-item {
-  flex: 1 0 180px;
+  flex: 0 0 180px;
   display: flex;
   flex-direction: column;
   align-items: center;

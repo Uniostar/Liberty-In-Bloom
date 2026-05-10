@@ -214,7 +214,7 @@ function showResults() {
   scoreMessage.textContent  = msg;
   scoreSubmsg.textContent   = submsg;
 
-  shareBox.textContent = `You scored ${score}/10 on the Liberty in Bloom quiz about the Declaration of Independence! 🇺🇸🌸 Test your knowledge at Liberty in Bloom — A Floral Celebration of America's 250th Birthday (July 4, 2026).`;
+  shareBox.textContent = `You scored ${score}/10 on the Liberty in Bloom quiz about the Declaration of Independence! 🌸 Test your knowledge at Liberty in Bloom — A Floral Celebration of America's 250th Birthday (July 4, 2026).`;
 
   if (missedQuestions.length > 0) {
     missedList.style.display = 'block';
