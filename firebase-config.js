@@ -1,10 +1,8 @@
 // ============================================================
 // Firebase Configuration — Liberty in Bloom
 // ============================================================
-// Fill in your values from:
-//   Firebase Console → Project Settings → Your Apps → Web App
-//
-// IMPORTANT: Do not share this file publicly (add to .gitignore).
+// Firebase web API keys are public client-side identifiers — safe to commit.
+// Security is enforced by App Check (reCAPTCHA) + Firestore security rules.
 // ============================================================
 
 const firebaseConfig = {
