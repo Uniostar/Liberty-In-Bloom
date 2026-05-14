@@ -237,7 +237,7 @@ function renderMostMissed(quizResults) {
         participants (<strong>${pct}%</strong>)
       </div>
       <p style="margin-top:0.8rem; font-size:0.85rem; color:var(--text-mid);">
-        Consider revisiting the Declaration section on the <a href="index.html#declaration" style="color:var(--crimson); font-weight:700;">Home page</a> to brush up on this topic!
+        Consider revisiting the Declaration section on the <a href="../index.html#declaration" style="color:var(--crimson); font-weight:700;">Home page</a> to brush up on this topic!
       </p>
     </div>`;
 }

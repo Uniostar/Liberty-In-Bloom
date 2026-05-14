@@ -1284,25 +1284,6 @@ ul { list-style: none; }
 }
 
 /* Fireworks */
-.fireworks-container {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 500;
-  overflow: hidden;
-}
-
-.firework {
-  position: absolute;
-  border-radius: 50%;
-  animation: fireworkExplode 1s ease-out forwards;
-}
-
-@keyframes fireworkExplode {
-  0%   { transform: scale(0); opacity: 1; }
-  50%  { opacity: 0.8; }
-  100% { transform: scale(3); opacity: 0; }
-}
 
 /* ============================================================
    SURVEY PAGE

@@ -229,16 +229,13 @@ function showResults() {
     missedList.style.display = 'none';
   }
 
-  // Save result (rate-limited: once per 24 hours per device)
   const QUIZ_RATE_KEY = 'libertyBloom_lastQuiz';
   if (!isRateLimited(QUIZ_RATE_KEY, 24 * 60 * 60 * 1000)) {
     saveQuizResult(score, missedQuestions);
     markSubmission(QUIZ_RATE_KEY);
   }
 
-  if (score >= 7) {
-    launchFireworks();
-  }
+  launchFireworks();
 
   nextBtn.textContent = 'Next Question →';
 }

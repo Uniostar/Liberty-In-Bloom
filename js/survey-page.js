@@ -102,14 +102,13 @@ surveyForm.addEventListener('submit', async function(e) {
     }
   }
 
-  // Rate limit: one survey submission per 24 hours per device
+  surveyError.textContent = '';
+
   const SURVEY_RATE_KEY = 'libertyBloom_lastSurvey';
   if (isRateLimited(SURVEY_RATE_KEY, 24 * 60 * 60 * 1000)) {
     surveyError.textContent = 'You have already submitted a response today. Please come back tomorrow!';
     return;
   }
-
-  surveyError.textContent = '';
 
   // Collect responses
   const responses = {};

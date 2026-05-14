@@ -435,47 +435,116 @@ function markSubmission(key) {
    FIREWORKS ANIMATION
    ============================================================ */
 function launchFireworks() {
-  let container = document.querySelector('.fireworks-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.classList.add('fireworks-container');
-    document.body.appendChild(container);
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:500;';
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  const particles = [];
+  const COLORS = ['#d4af37','#c9956a','#8b1a1a','#b8d4e8','#ffffff','#f0d060','#e8a4b4','#4a7fbf'];
+
+  function Particle(x, y, color, isRocket) {
+    this.x = x; this.y = y; this.color = color; this.isRocket = isRocket;
+    this.alpha = 1;
+    if (isRocket) {
+      this.vx = (Math.random() - 0.5) * 2;
+      this.vy = -(9 + Math.random() * 5);
+      this.size = 3;
+      this.trail = [];
+    } else {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 1.5 + Math.random() * 5;
+      this.vx = Math.cos(angle) * speed;
+      this.vy = Math.sin(angle) * speed;
+      this.size = 2 + Math.random() * 2.5;
+      this.gravity = 0.07;
+      this.decay = 0.014 + Math.random() * 0.012;
+    }
   }
 
-  const colors = ['#d4af37', '#c9956a', '#8b1a1a', '#b8d4e8', '#ffffff', '#f0d060', '#e8a4b4'];
-  const count = 28;
+  Particle.prototype.update = function() {
+    if (this.isRocket) {
+      this.trail.push({ x: this.x, y: this.y });
+      if (this.trail.length > 10) this.trail.shift();
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += 0.18;
+      if (this.vy >= 0) {
+        const n = 55 + Math.floor(Math.random() * 35);
+        const c1 = COLORS[Math.floor(Math.random() * COLORS.length)];
+        const c2 = COLORS[Math.floor(Math.random() * COLORS.length)];
+        for (let i = 0; i < n; i++) {
+          particles.push(new Particle(this.x, this.y, Math.random() < 0.5 ? c1 : c2, false));
+        }
+        this.alpha = 0;
+      }
+      return this.alpha > 0;
+    } else {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += this.gravity;
+      this.vx *= 0.97;
+      this.alpha -= this.decay;
+      return this.alpha > 0;
+    }
+  };
 
-  for (let i = 0; i < count; i++) {
-    setTimeout(() => {
-      const fw = document.createElement('div');
-      fw.classList.add('firework');
+  Particle.prototype.draw = function() {
+    ctx.save();
+    if (this.isRocket) {
+      this.trail.forEach((pt, i) => {
+        ctx.globalAlpha = (i / this.trail.length) * 0.35;
+        ctx.fillStyle = '#f0d060';
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.globalAlpha = Math.max(0, this.alpha);
+      ctx.fillStyle = this.color;
+      ctx.shadowColor = this.color;
+      ctx.shadowBlur = 4;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size * Math.max(0, this.alpha), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  };
 
-      const size  = 20 + Math.random() * 60;
-      const x     = 10 + Math.random() * 80;
-      const y     = 10 + Math.random() * 80;
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      const dur   = 0.8 + Math.random() * 0.8;
-
-      fw.style.cssText = `
-        width: ${size}px;
-        height: ${size}px;
-        left: ${x}%;
-        top: ${y}%;
-        background: radial-gradient(circle, ${color} 0%, transparent 70%);
-        animation-duration: ${dur}s;
-        margin-left: -${size/2}px;
-        margin-top: -${size/2}px;
-      `;
-
-      container.appendChild(fw);
-      setTimeout(() => { if (fw.parentNode) fw.parentNode.removeChild(fw); }, dur * 1000 + 100);
-    }, i * 120);
+  let launched = 0;
+  const totalRockets = 15;
+  function launchRocket() {
+    if (launched >= totalRockets) return;
+    const x = canvas.width * (0.12 + Math.random() * 0.76);
+    particles.push(new Particle(x, canvas.height, COLORS[Math.floor(Math.random() * COLORS.length)], true));
+    launched++;
+    if (launched < totalRockets) setTimeout(launchRocket, 160 + Math.random() * 80);
   }
+  launchRocket();
 
-  // Remove container after animation
-  setTimeout(() => {
-    if (container && container.parentNode) container.parentNode.removeChild(container);
-  }, count * 120 + 1500);
+  let frame = 0;
+  const maxFrames = 320;
+  function animate() {
+    frame++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = particles.length - 1; i >= 0; i--) {
+      if (!particles[i].update()) particles.splice(i, 1);
+      else particles[i].draw();
+    }
+    if (frame < maxFrames || particles.length > 0) {
+      requestAnimationFrame(animate);
+    } else {
+      canvas.remove();
+    }
+  }
+  requestAnimationFrame(animate);
 }
 
 /* ============================================================
