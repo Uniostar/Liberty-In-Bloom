@@ -102,6 +102,13 @@ surveyForm.addEventListener('submit', async function(e) {
     }
   }
 
+  const consentCheck = document.getElementById('consent-check');
+  if (!consentCheck || !consentCheck.checked) {
+    surveyError.textContent = 'Please check the consent box before submitting.';
+    consentCheck.closest('.survey-consent-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
   surveyError.textContent = '';
 
   const SURVEY_RATE_KEY = 'libertyBloom_lastSurvey';

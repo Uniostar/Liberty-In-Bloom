@@ -147,6 +147,38 @@
       color: var(--text-mid);
       text-align: center;
     }
+
+    .survey-consent-wrap {
+      background: rgba(212, 175, 55, 0.08);
+      border: 1.5px solid var(--gold);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .survey-consent-label {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      cursor: pointer;
+      font-size: 0.87rem;
+      color: var(--text-mid);
+      line-height: 1.55;
+    }
+
+    .survey-consent-label input[type="checkbox"] {
+      margin-top: 0.2rem;
+      flex-shrink: 0;
+      width: 17px;
+      height: 17px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
+    .survey-consent-label a {
+      color: var(--crimson);
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body class="survey-page-bg">
@@ -316,6 +348,21 @@
                 <span class="survey-option-label">No change</span>
               </label>
             </div>
+          </div>
+
+          <!-- Consent acknowledgment -->
+          <div class="survey-consent-wrap">
+            <label class="survey-consent-label">
+              <input type="checkbox" id="consent-check" name="consent" />
+              <span>
+                I am 13 years of age or older and voluntarily consent to my anonymous responses being
+                collected and used for educational research and scholarship purposes. I understand that
+                no personally identifiable information is collected, that participation is entirely
+                voluntary, and that I may close this page at any time without consequence.
+                Response data is stored securely and used solely for the Liberty in Bloom research
+                report in connection with America&rsquo;s 250th Anniversary.
+              </span>
+            </label>
           </div>
 
           <p class="text-center" id="survey-error" style="color:var(--crimson); font-weight:700; min-height:1.5rem; font-size:0.92rem;"></p>
